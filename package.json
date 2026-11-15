@@ -1,0 +1,1 @@
+{"name":"consept-site","private":true,"version":"1.0.0","scripts":{"dev":"node scripts/preview.cjs","start":"node scripts/preview.cjs","test":"node scripts/check.cjs"}}

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コンセプト設計室｜本音と現実のズレを、ビジネスの設計図に。</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#111111',
+                        darker: '#080808',
+                        light: '#F5F5F5',
+                        accent: '#c2b280', /* マットなベージュ/ゴールド */
+                        accentDark: '#a39466'
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)"
+                    },
+                    animation: {
+                        'spin-slow': 'spin 40s linear infinite',
+                        'spin-slow-reverse': 'spin 50s linear infinite reverse',
+                        'float': 'float 8s ease-in-out infinite',
+                        'float-delayed': 'float 8s ease-in-out 4s infinite',
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #111111;
+            color: #F5F5F5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        
+        .bg-grid {
+            background-size: 40px 40px;
+            background-position: center top;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(194, 178, 128, 0.3), transparent);
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        .vertical-line {
+            width: 1px;
+            height: 100px;
+            background-color: rgba(194, 178, 128, 0.4);
+            margin: 0 auto;
+        }
+
+        /* --- スクロール連動アニメーション --- */
+        .reveal {
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+        
+        .reveal-up { transform: translateY(40px); }
+        .reveal-left { transform: translateX(-40px); }
+        .reveal-right { transform: translateX(40px); }
+        .reveal-scale { transform: scale(0.95); }
+
+        /* ディレイ（時間差）設定 */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* --- ボタンの光沢（シャイン）エフェクト --- */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(194, 178, 128, 0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg) translateX(-150%);
+            transition: transform 0.8s ease;
+        }
+        .btn-shine:hover::after {
+            transform: rotate(30deg) translateX(150%);
+        }
+
+        /* ぼかしエフェクト装飾 */
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(194,178,128,0.08) 0%, rgba(17,17,17,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-grid relative">
+
+    <!-- 背景の光彩 -->
+    <div class="glow-circle w-[600px] h-[600px] top-[-100px] left-[-200px]"></div>
+    <div class="glow-circle w-[800px] h-[800px] bottom-[20%] right-[-300px]"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-dark/80 backdrop-blur-md border-b border-white/5 transition-all duration-500" id="header">
+        <div class="text-xl font-light tracking-[0.2em] text-light">
+            [ consept ] <span class="text-sm text-gray-400">design studio</span>
+        </div>
+    </header>
+
+    <!-- ① First View -->
+    <section class="relative min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden pt-20">
+        <!-- 幾何学的な構造体（アニメーション付き背景装飾） -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+            <!-- ゆっくり回転する四角形 -->
+            <div class="absolute animate-spin-slow">
+                <div class="w-[300px] h-[300px] md:w-[500px] md:h-[500px] border border-accent/50 rotate-45 animate-pulse-slow"></div>
+            </div>
+            <!-- 逆回転する四角形 -->
+            <div class="absolute animate-spin-slow-reverse">
+                <div class="w-[400px] h-[200px] md:w-[700px] md:h-[300px] border border-accent/30"></div>
+            </div>
+            <!-- ふわふわ浮遊する十字線 -->
+            <div class="absolute animate-float">
+                <div class="w-[1px] h-[150vh] bg-accent/40 absolute left-1/2 -translate-x-1/2 top-[-25vh]"></div>
+            </div>
+            <div class="absolute animate-float-delayed">
+                <div class="h-[1px] w-[150vw] bg-accent/40 absolute top-1/2 -translate-y-1/2 left-[-25vw]"></div>
+            </div>
+        </div>
+
+        <div class="relative z-10 text-center max-w-4xl mx-auto w-full">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-light leading-loose tracking-wider mb-10 reveal reveal-up">
+                「なんか違う」を、<br>売れる形に。
+            </h1>
+            <p class="text-lg md:text-2xl font-light text-gray-200 tracking-widest leading-loose mb-12 reveal reveal-up delay-100">
+                本音と現実のズレを、ビジネスの設計図に。<br><br>
+                <span class="text-accent">ビジネスを、感覚ではなく設計する。</span>
+            </p>
+            <div class="w-12 h-[1px] bg-accent mx-auto mb-12 reveal reveal-up delay-200"></div>
+            <div class="reveal reveal-up delay-300">
+                <a href="https://consept.base.ec/items/139319614" class="inline-block border border-accent text-accent font-light px-10 py-4 tracking-widest transition duration-500 hover:bg-accent hover:text-darker hover:shadow-[0_0_20px_rgba(194,178,128,0.3)] btn-shine">
+                    設計図を手に入れる
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ② サービス説明 -->
+    <section class="py-32 px-6 relative bg-darker/80">
+        <div class="max-w-3xl mx-auto text-center leading-loose font-light tracking-widest text-lg md:text-xl text-gray-300">
+            <p class="mb-10 reveal reveal-up">
+                コンセプト設計室は、<br>
+                あなたの中にある「なんか違う」を起点に、
+            </p>
+            <p class="mb-10 reveal reveal-up delay-100">
+                本質・経験・違和感を整理し、<br>
+                発信・商品・ブランドの軸を<br>
+                <span class="text-light font-normal border-b border-accent pb-1 transition-colors duration-500 hover:text-accent hover:border-light">“売れる形”として設計するサービス</span>です。
+            </p>
+            <p class="reveal reveal-up delay-200">
+                自己理解で終わらせず、<br>
+                収益に繋がる構造まで落とし込みます。
+            </p>
+        </div>
+    </section>
+
+    <div class="vertical-line my-16 reveal reveal-up"></div>
+
+    <!-- ③ Problem -->
+    <section class="py-24 px-6 relative z-10">
+        <div class="max-w-3xl mx-auto">
+            <p class="text-accent text-sm tracking-[0.3em] mb-4 text-center reveal reveal-up">PROBLEM</p>
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest text-center mb-16 leading-relaxed reveal reveal-up">
+                こんな状態のまま、<br>止まっていませんか？
+            </h2>
+            
+            <div class="space-y-6 bg-white/5 p-8 md:p-12 border border-white/10 backdrop-blur-sm hover:border-white/20 transition-colors duration-500 reveal reveal-scale">
+                <div class="flex items-start group">
+                    <div class="w-2 h-2 bg-accent mt-2.5 mr-6 shrink-0 transition-transform duration-300 group-hover:scale-150 group-hover:rotate-45"></div>
+                    <p class="text-lg md:text-xl font-light tracking-widest text-gray-200 transition-colors duration-300 group-hover:text-white">何を軸にすればいいのか分からない</p>
+                </div>
+                <div class="flex items-start group">
+                    <div class="w-2 h-2 bg-accent mt-2.5 mr-6 shrink-0 transition-transform duration-300 group-hover:scale-150 group-hover:rotate-45"></div>
+                    <p class="text-lg md:text-xl font-light tracking-widest text-gray-200 transition-colors duration-300 group-hover:text-white">正解は知っているのに、動けない</p>
+                </div>
+                <div class="flex items-start group">
+                    <div class="w-2 h-2 bg-accent mt-2.5 mr-6 shrink-0 transition-transform duration-300 group-hover:scale-150 group-hover:rotate-45"></div>
+                    <p class="text-lg md:text-xl font-light tracking-widest text-gray-200 transition-colors duration-300 group-hover:text-white">発信しているのに、なぜか繋がらない</p>
+                </div>
+                <div class="flex items-start group">
+                    <div class="w-2 h-2 bg-accent mt-2.5 mr-6 shrink-0 transition-transform duration-300 group-hover:scale-150 group-hover:rotate-45"></div>
+                    <p class="text-lg md:text-xl font-light tracking-widest text-gray-200 transition-colors duration-300 group-hover:text-white">学んでいるのに、形にならない</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ④ Cause -->
+    <section class="py-24 px-6 relative bg-darker z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <p class="text-accent text-sm tracking-[0.3em] mb-4 reveal reveal-up">CAUSE</p>
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest leading-loose mb-12 reveal reveal-up">
+                問題は、能力や努力ではありません。<br>
+                <span class="text-accent font-medium border-b border-accent pb-1 relative inline-block group">
+                    設計がないこと
+                    <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-light transition-all duration-500 group-hover:w-full"></span>
+                </span>です。
+            </h2>
+
+            <div class="text-left max-w-xl mx-auto space-y-4 mb-12 text-gray-300 font-light tracking-widest">
+                <p class="reveal reveal-left">・強みがあっても、商品にできない</p>
+                <p class="reveal reveal-left delay-100">・発信しても、売上に繋がらない</p>
+                <p class="reveal reveal-left delay-200">・学びが増えるほど、迷いが増える</p>
+            </div>
+
+            <p class="text-xl font-light tracking-widest text-light reveal reveal-up">
+                それは、本質とビジネスが<br class="md:hidden">繋がっていない状態です。
+            </p>
+        </div>
+    </section>
+
+    <!-- ⑤ 違和感の定義 -->
+    <section class="py-32 px-6 relative overflow-hidden">
+        <!-- 背景のぼんやりした光 -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[200px] bg-accent/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto text-center font-light tracking-widest leading-loose relative z-10">
+            <p class="text-xl md:text-2xl mb-12 reveal reveal-up">
+                違和感とは、<br>
+                「正しいはずなのに、なぜか進めない感覚」。
+            </p>
+            <p class="text-lg text-gray-300 mb-12 reveal reveal-up">
+                それは、本質と現実がズレているサインです。
+            </p>
+            <p class="text-lg text-gray-300 mb-12 reveal reveal-up">
+                違和感を無視した設計は、続きません。<br>
+                だからこそ、違和感は
+            </p>
+            <p class="text-2xl md:text-3xl text-accent reveal reveal-scale">
+                「直すもの」ではなく、<br class="md:hidden">読み解くものです。
+            </p>
+        </div>
+    </section>
+
+    <div class="section-divider reveal reveal-up"></div>
+
+    <!-- ⑥ Solution（3つの強み） -->
+    <section class="py-24 px-6 relative">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-20">
+                <p class="text-accent text-sm tracking-[0.3em] mb-4 reveal reveal-up">SOLUTION</p>
+                <h2 class="text-2xl md:text-3xl font-light tracking-widest leading-loose mb-10 reveal reveal-up">
+                    本質を見つけるだけでは<br class="md:hidden">終わらせません。<br>
+                </h2>
+                <p class="text-lg text-gray-300 font-light tracking-widest leading-loose reveal reveal-up delay-100">
+                    それを市場と戦略に接続し、<br>
+                    「やりたいこと」と「売れること」を一致させます。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mt-16">
+                <!-- 柱1 -->
+                <div class="border border-white/10 p-10 relative group hover:bg-white/[0.02] transition-colors duration-500 reveal reveal-up">
+                    <div class="absolute top-0 left-0 w-full h-[1px] bg-accent/50 scale-x-0 origin-left transition-transform duration-700 group-hover:scale-x-100"></div>
+                    <p class="text-accent text-xs tracking-widest mb-3 transition-transform duration-500 group-hover:-translate-y-1">元占い師</p>
+                    <h3 class="text-xl font-light tracking-widest mb-6">人生を見る力</h3>
+                    <p class="text-gray-400 font-light leading-relaxed text-sm">
+                        100名以上を鑑定。その人の「本質」や「無意識のズレ」を読み取り、違和感を言語化してきました。単なる助言ではなく、思考や選択のズレを修正することで、現実の変化につながる瞬間を数多く目の当たりにしてきた経験から、「問題の原因は能力ではなく、構造のズレにある」という本質に辿り着いています。
+                    </p>
+                </div>
+                <!-- 柱2 -->
+                <div class="border border-white/10 p-10 relative group hover:bg-white/[0.02] transition-colors duration-500 reveal reveal-up delay-100">
+                    <div class="absolute top-0 left-0 w-full h-[1px] bg-accent/50 scale-x-0 origin-left transition-transform duration-700 group-hover:scale-x-100"></div>
+                    <p class="text-accent text-xs tracking-widest mb-3 transition-transform duration-500 group-hover:-translate-y-1">元人事</p>
+                    <h3 class="text-xl font-light tracking-widest mb-6">キャリアを見る力</h3>
+                    <p class="text-gray-400 font-light leading-relaxed text-sm">
+                        ゲーム会社・健康食品会社・コンサルティング会社にて採用業務に従事。ダイレクトソーシングでは、1万人以上のキャリアシートを精査してきました。表面的なスキルだけでなく、「どの環境で価値を発揮できるか」「どのポジションで成果が出るか」といった“人と市場の適合”を見極める経験を積み、個人の資質を「市場価値」として成立させる視点を培っています。
+                    </p>
+                </div>
+                <!-- 柱3 -->
+                <div class="border border-white/10 p-10 relative group hover:bg-white/[0.02] transition-colors duration-500 reveal reveal-up delay-200">
+                    <div class="absolute top-0 left-0 w-full h-[1px] bg-accent/50 scale-x-0 origin-left transition-transform duration-700 group-hover:scale-x-100"></div>
+                    <p class="text-accent text-xs tracking-widest mb-3 transition-transform duration-500 group-hover:-translate-y-1">元ゲームプランナー</p>
+                    <h3 class="text-xl font-light tracking-widest mb-6 leading-relaxed">熱狂と収益を生む<br>ビジネス設計力</h3>
+                    <p class="text-gray-400 font-light leading-relaxed text-sm">
+                        5年間のゲームアプリ運営で、IPコンセプト設計からマーケティングまで一貫して担当。キャラクターデザインやシナリオ制作にも携わり、無形の価値を「収益」に変える設計を実践してきました。感覚的なアイデアに留めず、ユーザーに届き、継続的に選ばれる形へと落とし込むシビアな戦略視点から、本質を「売れる状態」に整えブランドとして成立させます。
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑦ Deliverables -->
+    <section class="py-24 px-6 relative bg-darker/90 border-y border-white/5">
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            <div class="order-2 md:order-1 relative reveal reveal-right">
+                <div class="aspect-[4/3] bg-dark border border-white/10 relative overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=1200&auto=format&fit=crop" alt="" class="w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-70 group-hover:scale-105 transition-all duration-1000">
+                    <div class="absolute inset-0 border border-accent/20 m-4 pointer-events-none transition-transform duration-700 group-hover:scale-95"></div>
+                </div>
+                <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-[radial-gradient(rgba(194,178,128,0.4)_1px,transparent_1px)] [background-size:8px_8px] animate-pulse-slow"></div>
+            </div>
+            
+            <div class="order-1 md:order-2">
+                <p class="text-accent text-sm tracking-[0.3em] mb-4 reveal reveal-up">DELIVERABLES</p>
+                <h2 class="text-2xl md:text-3xl font-light tracking-widest leading-loose mb-8 reveal reveal-up">
+                    感覚ではなく、<br>“再現できる形”で残します。
+                </h2>
+                <p class="text-gray-300 font-light leading-relaxed mb-10 reveal reveal-up">
+                    あなた専用に設計された、ブランドと収益の設計図。<br>
+                    属人化を排除し、プロとしての視点とAI分析を掛け合わせた高品質な資料をお渡しします。
+                </p>
+
+                <ul class="space-y-4 font-light tracking-widest text-sm md:text-base text-gray-200">
+                    <li class="flex items-center border-b border-white/10 pb-3 reveal reveal-left delay-100 group">
+                        <span class="text-accent mr-4 transition-transform duration-300 group-hover:translate-x-1">▪︎</span>コンセプト設計図（10〜15枚）
+                    </li>
+                    <li class="flex items-center border-b border-white/10 pb-3 reveal reveal-left delay-200 group">
+                        <span class="text-accent mr-4 transition-transform duration-300 group-hover:translate-x-1">▪︎</span>SNS投稿用画像
+                    </li>
+                    <li class="flex items-center border-b border-white/10 pb-3 reveal reveal-left delay-300 group">
+                        <span class="text-accent mr-4 transition-transform duration-300 group-hover:translate-x-1">▪︎</span>思考を整理した議事録
+                    </li>
+                    <li class="flex items-center border-b border-white/10 pb-3 reveal reveal-left delay-300 group">
+                        <span class="text-accent mr-4 transition-transform duration-300 group-hover:translate-x-1">▪︎</span>心の音（自分を表す音楽データ）
+                    </li>
+                    <li class="flex items-center border-b border-white/10 pb-3 reveal reveal-left delay-300 group">
+                        <span class="text-accent mr-4 transition-transform duration-300 group-hover:translate-x-1">▪︎</span>具体的なブランド設計図
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 実例スライドセクション -->
+        <div class="max-w-5xl mx-auto mt-32 border-t border-white/10 pt-16">
+            <div class="text-center mb-12">
+                <p class="text-gray-300 font-light tracking-widest leading-loose text-sm md:text-base reveal reveal-up">
+                    これは、私自身のコンセプト設計図の一部です。<br>
+                    実際にこの設計をもとに、発信・サービス・導線を構築しています。
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- スライド1 -->
+                <div class="aspect-[16/9] bg-dark border border-white/10 relative overflow-hidden group shadow-lg shadow-black/50 reveal reveal-up">
+                    <img src="slide-img1.jpg" alt="" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 border border-accent/10 m-2 pointer-events-none"></div>
+                </div>
+                <!-- スライド2 -->
+                <div class="aspect-[16/9] bg-dark border border-white/10 relative overflow-hidden group shadow-lg shadow-black/50 reveal reveal-up delay-100">
+                    <img src="slide-img2.jpg" alt="" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 border border-accent/10 m-2 pointer-events-none"></div>
+                </div>
+                <!-- スライド3 -->
+                <div class="aspect-[16/9] bg-dark border border-white/10 relative overflow-hidden group shadow-lg shadow-black/50 reveal reveal-up delay-200">
+                    <img src="slide-img3.jpg" alt="" class="w-full h-full object-cover opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition duration-700">
+                    <div class="absolute inset-0 border border-accent/10 m-2 pointer-events-none"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑧ Before / After -->
+    <section class="py-24 px-6 relative">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl font-light tracking-widest text-center mb-16 reveal reveal-up">
+                設計図を手に入れた後の変化
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Before -->
+                <div class="bg-white/5 p-10 border border-white/10 opacity-80 reveal reveal-right">
+                    <p class="text-gray-500 tracking-widest mb-6 font-medium">BEFORE</p>
+                    <ul class="space-y-6 text-gray-400 font-light tracking-widest leading-relaxed">
+                        <li class="flex items-start">
+                            <span class="mr-3">×</span>何をすればいいのか分からない
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3">×</span>正解を探し続けている
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3">×</span>やっているのに、繋がらない
+                        </li>
+                    </ul>
+                </div>
+                <!-- After -->
+                <div class="bg-accent/5 p-10 border border-accent/40 relative reveal reveal-left delay-100 group hover:shadow-[0_0_30px_rgba(194,178,128,0.1)] transition-shadow duration-500">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-accent transition-all duration-500 group-hover:w-2"></div>
+                    <p class="text-accent tracking-widest mb-6 font-medium">AFTER</p>
+                    <ul class="space-y-6 text-light font-light tracking-widest leading-relaxed">
+                        <li class="flex items-start">
+                            <span class="text-accent mr-3">〇</span>何を軸にするかが明確になる
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-accent mr-3">〇</span>強みを収益に変えられる
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-accent mr-3">〇</span>発信・商品・売り方が一本に繋がる
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider reveal reveal-up"></div>
+
+    <!-- ⑨ 向いている人／向いていない人 -->
+    <section class="py-24 px-6 relative">
+        <div class="max-w-3xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="reveal reveal-up">
+                    <h3 class="text-lg font-light tracking-widest mb-6 border-b border-white/20 pb-2 text-light">このサービスが向いている人</h3>
+                    <ul class="space-y-4 text-gray-300 font-light tracking-widest text-sm leading-relaxed">
+                        <li class="flex items-start"><span class="text-accent mr-2">・</span>違和感を感じているが言語化できない</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">・</span>自分のビジネスを本気で形にしたい</li>
+                        <li class="flex items-start"><span class="text-accent mr-2">・</span>自分ごととして事業に向き合える</li>
+                    </ul>
+                </div>
+                <div class="reveal reveal-up delay-100">
+                    <h3 class="text-lg font-light tracking-widest mb-6 border-b border-white/20 pb-2 text-gray-500">このサービスが向いていない人</h3>
+                    <ul class="space-y-4 text-gray-500 font-light tracking-widest text-sm leading-relaxed">
+                        <li>・ただ正解だけを知りたい人</li>
+                        <li>・自分の内面を見たくない人</li>
+                        <li>・すべてを他人に任せたい人</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑩ Flow & Price -->
+    <section id="flow" class="py-24 px-6 relative bg-darker">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-20">
+                <p class="text-accent text-sm tracking-[0.3em] mb-4 reveal reveal-up">FLOW & PRICE</p>
+                <h2 class="text-2xl md:text-3xl font-light tracking-widest leading-relaxed reveal reveal-up">
+                    提供フローと価格
+                </h2>
+            </div>
+
+            <div class="space-y-12">
+                <!-- Entry Step (フロントエンド商品) -->
+                <div class="bg-accent/5 border border-accent/30 p-8 md:p-10 relative mb-16 reveal reveal-up hover:border-accent/60 transition-colors duration-500 group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-accent/50 group-hover:bg-accent transition-colors duration-500"></div>
+                    <div class="md:flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-accent text-xs tracking-widest mb-2">まずはここから（ENTRY）</p>
+                            <h3 class="text-xl md:text-2xl font-light tracking-widest mb-4 text-light">思考整理診断</h3>
+                        </div>
+                        <div class="text-right mt-4 md:mt-0">
+                            <p class="text-lg text-light tracking-wider"><span class="text-accent font-medium text-3xl mx-1">1,000</span>円</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-sm font-light tracking-widest mb-8">
+                        <p class="text-gray-300 border-l border-white/20 pl-4 py-1">
+                            <span class="text-gray-500 block text-xs mb-1">［内容］</span>
+                            いくつかの質問にお答えいただくと、24〜48時間以内にDMまたはメールにて、現状の「違和感」と「強み」を分析した診断結果をお届けします。
+                        </p>
+                        <p class="text-gray-300 border-l border-accent/50 pl-4 py-1">
+                            <span class="text-accent block text-xs mb-1">［対象］</span>
+                            本格的な設計の前に、まずは気軽に自分の現在地を客観視したい方
+                        </p>
+                    </div>
+                    <a href="https://consept.base.ec/items/139306281" class="inline-block border border-accent/50 text-accent text-sm font-light px-8 py-3 tracking-widest transition duration-500 hover:bg-accent/10 btn-shine">
+                        診断に申し込む
+                    </a>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="bg-white/5 border border-white/10 p-8 md:p-10 relative md:ml-8 reveal reveal-up group hover:border-white/20 transition-colors duration-500">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-accent/40 group-hover:bg-accent/60 transition-colors duration-500"></div>
+                    <div class="md:flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-accent text-xs tracking-widest mb-2">STEP 1</p>
+                            <h3 class="text-xl md:text-2xl font-light tracking-widest mb-4">ブランドコンセプト設計図</h3>
+                        </div>
+                        <div class="text-right mt-4 md:mt-0">
+                            <p class="text-xs text-gray-500 line-through mb-1">通常 30,000円</p>
+                            <p class="text-lg text-light tracking-wider">モニター価格 <span class="text-accent font-medium text-3xl mx-1">19,800</span>円</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-sm font-light tracking-widest">
+                        <p class="text-gray-300 border-l border-white/20 pl-4 py-1">
+                            <span class="text-gray-500 block text-xs mb-1">［対象］</span>
+                            ビジネスの方向性や発信の軸が定まらず、具体的な設計図が欲しい方
+                        </p>
+                        <p class="text-gray-300 border-l border-accent/50 pl-4 py-1">
+                            <span class="text-accent block text-xs mb-1">［得られるもの］</span>
+                            自分の本質を言語化し、自分に合ったブランディングと販売戦略が網羅されたスライド資料
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white/5 border border-white/10 p-8 md:p-10 relative md:ml-16 reveal reveal-up group hover:border-white/20 transition-colors duration-500">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-accent/70 group-hover:bg-accent/90 transition-colors duration-500"></div>
+                    <div class="md:flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-accent text-xs tracking-widest mb-2">STEP 2</p>
+                            <h3 class="text-xl md:text-2xl font-light tracking-widest mb-4">ブランド違和感整理セッション <span class="text-sm text-gray-400">（60分）</span></h3>
+                        </div>
+                        <div class="text-right mt-4 md:mt-0">
+                            <p class="text-xs text-gray-500 line-through mb-1">通常 29,800円</p>
+                            <p class="text-lg text-light tracking-wider">モニター価格 <span class="text-accent font-medium text-3xl mx-1">9,800</span>円</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-sm font-light tracking-widest">
+                        <p class="text-gray-300 border-l border-white/20 pl-4 py-1">
+                            <span class="text-gray-500 block text-xs mb-1">［対象］</span>
+                            どこに違和感があるのか、自分一人では言語化しきれない方
+                        </p>
+                        <p class="text-gray-300 border-l border-accent/50 pl-4 py-1">
+                            <span class="text-accent block text-xs mb-1">［得られるもの］</span>
+                            資料をもとにした対話による圧倒的な思考整理と、ブランディングへの具体的な活かし方の発見
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white/5 border border-accent/40 p-8 md:p-10 relative md:ml-24 shadow-[0_0_30px_rgba(194,178,128,0.05)] reveal reveal-up group hover:border-accent/60 transition-colors duration-500">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-accent shadow-[0_0_10px_rgba(194,178,128,0.5)]"></div>
+                    <div class="md:flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-accent text-xs tracking-widest mb-2">STEP 3</p>
+                            <h3 class="text-xl md:text-2xl font-light tracking-widest mb-4">ブランド設計リーディング <span class="text-sm text-gray-400">（90分×2回）</span></h3>
+                        </div>
+                        <div class="text-right mt-4 md:mt-0">
+                            <p class="text-xs text-gray-500 line-through mb-1">通常 120,000円</p>
+                            <p class="text-lg text-light tracking-wider">モニター価格 <span class="text-accent font-medium text-3xl mx-1">49,800</span>円</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-sm font-light tracking-widest">
+                        <p class="text-gray-300 border-l border-white/20 pl-4 py-1">
+                            <span class="text-gray-500 block text-xs mb-1">［対象］</span>
+                            確実に収益化までの道筋を立て、事業を実行に移したい方
+                        </p>
+                        <p class="text-gray-300 border-l border-accent/50 pl-4 py-1">
+                            <span class="text-accent block text-xs mb-1">［得られるもの］</span>
+                            具体的な商品構造から売り方の流れ、成功までのロードマップを網羅した最終的なビジネス設計図
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-20 text-center reveal reveal-up">
+                <a href="https://consept.base.ec/items/139319614" class="inline-block bg-accent text-darker font-medium px-16 py-5 tracking-[0.2em] transition duration-500 hover:bg-light hover:shadow-[0_0_30px_rgba(245,245,245,0.4)] btn-shine">
+                    コンセプト設計を申し込む
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑪ Profile -->
+    <section class="py-32 px-6 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-16 items-center md:items-start relative z-10">
+            <div class="w-40 h-40 md:w-56 md:h-56 shrink-0 relative reveal reveal-scale">
+                <div class="w-full h-full rounded-full border border-white/20 overflow-hidden bg-darker flex items-center justify-center p-2 group hover:border-accent/50 transition-colors duration-700">
+                     <div class="w-full h-full rounded-full border border-accent/30 relative overflow-hidden">
+                         <!-- ↓ ここを写真のタグに変更 ↓ -->
+                         <img src="profile.png" alt="" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                     </div>
+                </div>
+            </div>
+            
+            <div class="text-center md:text-left">
+                <p class="text-accent tracking-widest text-sm mb-2 reveal reveal-up">コンセプトプランナー</p>
+                <h2 class="text-2xl font-light tracking-widest mb-8 reveal reveal-up">Ruri</h2>
+                
+                <div class="space-y-6 text-gray-300 font-light leading-loose tracking-wide text-sm md:text-base">
+                    <p class="reveal reveal-up">
+                        これまで、人事として1万人以上の履歴書から適性を分析し、ゲーム会社では企画・マーケティングの第一線でビジネスを構築。さらに占い師として100人以上の深い内面に触れる鑑定を行ってきました。
+                    </p>
+                    <p class="reveal reveal-up delay-100">
+                        これらのキャリアを通じて培った<span class="text-accent font-medium border-b border-accent/50 pb-1">「人を見る力 × 本質分析 × ビジネス設計」</span>の3つの視点を統合し、あなたの曖昧な価値を確固たるブランドへと変換します。
+                    </p>
+                    <p class="text-light reveal reveal-up delay-200">
+                        「なんか違う」を放置しない人のための設計をしています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑫ Closing -->
+    <section class="py-32 px-6 bg-darker text-center border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-2xl mx-auto relative z-10">
+            <h2 class="text-2xl md:text-4xl font-light tracking-[0.2em] leading-loose text-light reveal reveal-scale">
+                コンセプト設計で、<br>
+                ズレのない世界を。
+            </h2>
+            <div class="w-[1px] h-16 bg-accent mx-auto mt-12 mb-8 reveal reveal-up delay-100"></div>
+            <div class="text-xl font-light tracking-[0.2em] text-light reveal reveal-up delay-200">
+                [ consept ]
+            </div>
+            <p class="text-sm font-light tracking-widest text-gray-400 mt-4 reveal reveal-up delay-300">
+                designing concept ＆ soul
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center bg-darker">
+        <p class="text-xs text-gray-600 tracking-widest">&copy; consept design studio.</p>
+    </footer>
+
+    <!-- Intersection Observer API を用いたスクロールアニメーション用スクリプト -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // スクロールで発火する要素の監視
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -10% 0px', // 画面の下から10%入った時点で発火
+                threshold: 0.1
+            };
+
+            const revealElements = document.querySelectorAll('.reveal');
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // 要素が画面に入ったら active クラスを付与
+                        entry.target.classList.add('active');
+                        // 一度発火したら監視を解除する（1回きりのアニメーションにする場合）
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            revealElements.forEach(el => {
+                observer.observe(el);
+            });
+
+            // ヘッダーのスクロール時の背景制御
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('shadow-lg', 'shadow-black/50');
+                    header.classList.replace('bg-dark/80', 'bg-darker/95');
+                } else {
+                    header.classList.remove('shadow-lg', 'shadow-black/50');
+                    header.classList.replace('bg-darker/95', 'bg-dark/80');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

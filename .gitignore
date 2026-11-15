@@ -1,0 +1,9 @@
+node_modules/
+artifacts/
+*.log
+
+release/
+.column-cache/
+__pycache__/
+.env
+.env.*

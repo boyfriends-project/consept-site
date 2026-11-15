@@ -1,0 +1,77 @@
+name: Publish columns
+on:
+  repository_dispatch:
+    types: [microcms-articles]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deployment target
+        type: choice
+        options: [preview, production]
+      bootstrap:
+        description: First deployment (allow missing image manifest)
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: consept-column-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.ref_name == github.event.repository.default_branch && (github.event_name == 'workflow_dispatch' || vars.COLUMN_AUTO_PUBLISH == 'enabled')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --only-binary=:all: -r scripts/column-requirements.txt
+      - run: node scripts/build.cjs
+      - run: python scripts/test_columns.py
+      - uses: actions/cache/restore@v4
+        id: cache
+        with:
+          path: .column-cache
+          key: column-media-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: column-media-v1-
+      - name: Generate and validate complete release
+        id: build
+        env:
+          MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          BOOTSTRAP: ${{ inputs.bootstrap }}
+        run: |
+          args=()
+          if [[ "$BOOTSTRAP" == "true" ]]; then args+=(--bootstrap); fi
+          python scripts/columns.py "${args[@]}"
+      - name: Select Pages branch
+        id: target
+        env:
+          PRODUCTION: ${{ vars.CLOUDFLARE_PRODUCTION_BRANCH }}
+          TARGET: ${{ inputs.target }}
+        run: |
+          test -n "$PRODUCTION" && test "$PRODUCTION" != "column-preview"
+          branch="$PRODUCTION"
+          if [[ "$TARGET" == "preview" ]]; then branch=column-preview; fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+      - name: Deploy validated files
+        env:
+          DIRECTORY: ${{ steps.build.outputs.directory }}
+          BRANCH: ${{ steps.target.outputs.branch }}
+          PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$PROJECT"
+          npx --yes wrangler@4 pages deploy "$DIRECTORY" --project-name "$PROJECT" --branch "$BRANCH"
+      - name: Save verified active image files
+        uses: actions/cache/save@v4
+        if: success() && hashFiles('.column-cache/*.webp') != ''
+        with:
+          path: .column-cache
+          key: ${{ steps.cache.outputs.cache-primary-key }}
+
