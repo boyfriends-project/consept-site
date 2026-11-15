@@ -240,9 +240,11 @@ def validate(stage):
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument("--bootstrap",action="store_true",help="Allow an initial 404 for the published manifest")
+    args.add_argument("--fresh-preview", action="store_true", help="First preview: acquire and validate images directly from the CMS")
     opts = args.parse_args()
     rows = fetch_articles(os.environ["MICROCMS_API_KEY"])
-    stage = build(rows, previous_manifest(request,opts.bootstrap))
+    previous = {} if opts.fresh_preview else previous_manifest(request, opts.bootstrap)
+    stage = build(rows, previous)
     print("Validated:",stage)
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as output:

@@ -45,9 +45,11 @@ jobs:
         env:
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
           BOOTSTRAP: ${{ inputs.bootstrap }}
+          TARGET: ${{ inputs.target }}
         run: |
           args=()
           if [[ "$BOOTSTRAP" == "true" ]]; then args+=(--bootstrap); fi
+          if [[ "$BOOTSTRAP" == "true" && "$TARGET" == "preview" ]]; then args+=(--fresh-preview); fi
           python scripts/columns.py "${args[@]}"
       - name: Select Pages branch
         id: target
