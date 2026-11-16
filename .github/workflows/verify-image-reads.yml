@@ -1,0 +1,22 @@
+name: Verify published image reads
+on:
+  push:
+    branches: [codex/verify-image-fetch-403]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --only-binary=:all: -r scripts/column-requirements.txt
+      - name: Check live production and preview reads
+        run: python scripts/verify_published_reads.py
+      - name: Check reuse and rejection of broken or missing images
+        run: python scripts/test_columns.py -v

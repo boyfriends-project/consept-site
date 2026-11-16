@@ -27,6 +27,9 @@ class NoRedirect(HTTPRedirectHandler):
 
 def request(url, method="GET", headers=None, limit=MAX_FILE):
     req = Request(url, method=method, headers=headers or {})
+    if url.startswith(SITE + "/"):
+        # Cloudflare rejects urllib's default user agent on the published site.
+        req.add_header("User-Agent", "consept-site/1.0 (+https://consept.jp/)")
     with build_opener(NoRedirect()).open(req, timeout=35) as res:
         if res.status != 200:
             raise ValueError("Unexpected HTTP status")
