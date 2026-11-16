@@ -169,7 +169,7 @@ def generate(stage, rows, images):
     tree.write(sitemap,encoding="utf-8",xml_declaration=True)
     images.finish()
     with (stage / "_headers").open("a",encoding="utf-8") as f:
-        f.write("\n"+MANIFEST+"\n  Cache-Control: no-store\n")
+        f.write("\n/column/*\n  Cache-Control: no-store\n")
     if sum(p.is_file() for p in stage.rglob("*")) > 20000:
         raise ValueError("Cloudflare Pages free file limit exceeded")
 
