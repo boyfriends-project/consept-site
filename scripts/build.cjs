@@ -43,4 +43,7 @@ const checkCopy = require('../content/anxiety-check.json');
 const renderCheck = require('./anxiety-check.cjs');
 page('anxiety-check', checkCopy.title + '｜consept', checkCopy.description, renderCheck(checkCopy),
   '<link rel="stylesheet" href="/assets/anxiety-check.css"><script src="/assets/anxiety-check.js" defer></script>');
-console.log('Built 6 static pages. Preview-only: noindex and form-action none retained.');
+const lessonCopy = require('../content/mental-management.json');
+page('lessons/mental-management', lessonCopy.title + '｜consept', lessonCopy.introduction,
+  require('./mental-management.cjs')(lessonCopy), '<link rel="stylesheet" href="/assets/mental-management.css">');
+console.log('Built 7 static pages. Preview-only: noindex and form-action none retained.');

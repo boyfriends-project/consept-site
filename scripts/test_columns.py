@@ -54,6 +54,11 @@ class Integration(unittest.TestCase):
         images = Images(stage,self.cache,previous or {},self.mock)
         generate(stage,rows,images)
         validate(stage)
+        lesson = stage/"lessons/mental-management/index.html"
+        self.assertTrue(lesson.is_file())
+        self.assertIn('content="noindex,follow"', lesson.read_text(encoding="utf-8"))
+        self.assertNotIn("/lessons/", (stage/"sitemap.xml").read_text())
+        self.assertTrue((stage/"anxiety-check/index.html").is_file())
         return stage,images.entries
 
     def test_lifecycle(self):
@@ -101,6 +106,14 @@ class Integration(unittest.TestCase):
             self.run_build([ROW])
         with patch("column_images.MAX_NEW_IMAGES",0),self.assertRaisesRegex(ValueError,"guard"):
             self.run_build([ROW])
+
+    def test_lesson_indexing_policy(self):
+        stage, _ = self.run_build([])
+        lesson = stage/"lessons/mental-management/index.html"
+        original = lesson.read_text(encoding="utf-8")
+        lesson.write_text(original.replace("noindex,follow", "index,follow"), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError,"indexing policy"):
+            validate(stage)
 
     def test_invalid_articles(self):
         with self.assertRaisesRegex(ValueError,"slug"):

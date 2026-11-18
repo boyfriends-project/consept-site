@@ -6,7 +6,9 @@ const root = path.resolve(__dirname, '..');
 const out = process.env.COLUMN_STAGE || path.join(root, 'release', 'cloudflare-pages');
 const siteOrigin = 'https://consept.jp';
 const pages = ['index.html', 'coaching/index.html', 'coaching/monitor/index.html', 'privacy/index.html', 'legal/index.html', 'anxiety-check/index.html'];
-const assets = ['favicon.svg', 'forest.webp', 'ruri.webp', 'site.css', 'site.js', 'sky.webp', 'anxiety-check.css', 'anxiety-check.js'];
+const unlisted = new Set(require('../content/unlisted-pages.json'));
+pages.push(...unlisted);
+const assets = ['favicon.svg', 'forest.webp', 'ruri.webp', 'site.css', 'site.js', 'sky.webp', 'anxiety-check.css', 'anxiety-check.js', 'mental-management.css'];
 // After approval, copy the chosen 1200 x 630 PNG to assets/share.png.
 const hasShareImage = fs.existsSync(path.join(root, 'assets', 'share.png'));
 if (hasShareImage) {
@@ -70,13 +72,14 @@ for (const name of pages) {
     const json = JSON.stringify({ '@context': 'https://schema.org', ...entity }).replaceAll('<', '\\u003c');
     tags.push(`<script type="application/ld+json">${json}</script>`);
   }
-  const html = original.replace(banner, '').replace(robots, '<meta name="robots" content="index,follow">' + tags.join('\n'));
-  assert(!/LOCAL PREVIEW|noindex|localhost/.test(html));
+  const html = original.replace(banner, '').replace(robots, '<meta name="robots" content="' + (unlisted.has(name) ? 'noindex,follow' : 'index,follow') + '">' + tags.join('\n'));
+  assert(!/LOCAL PREVIEW|localhost/.test(html));
+  assert.equal(html.includes('content="noindex,follow"'), unlisted.has(name));
   write(name, html);
 }
 for (const name of assets) write('assets/' + name, fs.readFileSync(path.join(root, 'assets', name)));
 write('404.html', '<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>ページが見つかりません｜consept</title><link rel="stylesheet" href="/assets/site.css"></head><body><main class="narrow section"><h1>ページが見つかりません</h1><p>URLをご確認いただくか、トップページへお戻りください。</p><a class="button" href="/">トップページへ戻る</a></main></body></html>\n');
-const entries = pages.map(name => `  <url><loc>${escapeMarkup(canonicalUrl(name))}</loc></url>`);
+const entries = pages.filter(name => !unlisted.has(name)).map(name => `  <url><loc>${escapeMarkup(canonicalUrl(name))}</loc></url>`);
 write('sitemap.xml', [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',

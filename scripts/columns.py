@@ -205,13 +205,19 @@ class References(HTMLParser):
 
 def validate(stage):
     indexed = set()
+    unlisted = set(json.loads((ROOT/"content/unlisted-pages.json").read_text(encoding="utf-8")))
     for page in stage.rglob("*.html"):
         parser = References()
         parser.feed(page.read_text(encoding="utf-8"))
         if page.name == "index.html":
             parent = page.parent.relative_to(stage).as_posix()
             url = SITE + ("/" if parent == "." else "/" + parent + "/")
-            indexed.add(url)
+            is_unlisted = page.relative_to(stage).as_posix() in unlisted
+            has_noindex = "noindex" in (parser.meta.get("robots") or "").split(",")
+            if has_noindex != is_unlisted:
+                raise ValueError("Incorrect indexing policy: " + url)
+            if not is_unlisted:
+                indexed.add(url)
             if parser.canonical != url or parser.meta.get("og:url") != url:
                 raise ValueError("Incorrect canonical or sharing URL: " + url)
             for field in ("description", "og:title", "og:image", "twitter:image"):
@@ -249,4 +255,3 @@ if __name__ == "__main__":
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as output:
             output.write("directory="+stage.as_posix()+"\n")
-
