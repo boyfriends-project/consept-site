@@ -59,6 +59,10 @@ class Integration(unittest.TestCase):
         self.assertIn('content="noindex,follow"', lesson.read_text(encoding="utf-8"))
         self.assertNotIn("/lessons/", (stage/"sitemap.xml").read_text())
         self.assertTrue((stage/"anxiety-check/index.html").is_file())
+        complete = stage/"subscription-complete/index.html"
+        self.assertTrue(complete.is_file())
+        self.assertIn('content="noindex,follow"', complete.read_text(encoding="utf-8"))
+        self.assertNotIn("/subscription-complete/", (stage/"sitemap.xml").read_text())
         return stage,images.entries
 
     def test_lifecycle(self):
