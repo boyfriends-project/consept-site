@@ -1,0 +1,45 @@
+.anxiety-check { padding-bottom: 80px; }
+.anxiety-check [hidden] { display: none !important; }
+.check-intro { padding-top: 72px; padding-bottom: 48px; }
+.check-intro h1 { font-size: clamp(27px, 4vw, 40px); line-height: 1.65; }
+.check-lead { font-size: clamp(17px, 2.5vw, 21px); }
+.check-examples { border-left: 3px solid var(--sage); padding: 10px 0 10px 24px; margin: 30px 0; }
+.check-examples p:last-child { margin-bottom: 0; }
+.check-body { border-top: 1px solid var(--line); padding-top: 38px; }
+#check-controls { border: 0; padding: 0; margin: 0; min-width: 0; }
+#check-progress { color: var(--green); }
+#check-error:empty, #check-update:empty { display: none; }
+#check-error { color: #803d2b; background: #fff0df; padding: 16px; }
+.anxiety-check [data-question] { min-width: 0; margin: 30px 0; padding: 24px; border: 1px solid var(--line); background: #fffefa; border-radius: 8px; }
+.anxiety-check legend { padding: 0 8px; font-weight: 600; line-height: 1.8; }
+.check-number { color: var(--green); }
+.check-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.check-options label { display: flex; align-items: center; gap: 10px; margin: 0; padding: 14px; border: 1px solid var(--line); border-radius: 5px; cursor: pointer; line-height: 1.6; }
+.check-options input { accent-color: var(--green); width: 20px; height: 20px; flex-shrink: 0; margin: 0; }
+.check-options label:has(input:checked) { background: #e8eee8; border-color: var(--green); }
+.check-options label:focus-within { outline: 3px solid var(--green); outline-offset: 3px; }
+.anxiety-check button:focus-visible, #result-title:focus-visible { outline: 3px solid var(--green); outline-offset: 5px; }
+.anxiety-check .check-missing { border: 2px solid #803d2b; }
+.check-submit { width: 100%; margin: 12px 0 25px; }
+#check-result { margin-top: 40px; }
+.check-result-card { padding: clamp(24px, 5vw, 48px); background: #e8eee8; border-radius: 8px; }
+.check-score { color: var(--green); }
+#check-score { font-size: 56px; line-height: 1.3; font-family: var(--serif); }
+#check-description h3 { font-size: clamp(24px, 4vw, 32px); }
+.check-catch { font-size: 18px; }
+.check-video { margin-top: 48px; padding: clamp(22px, 5vw, 44px); border: 1px solid var(--line); border-radius: 8px; }
+.check-video h4 { font-family: var(--serif); font-size: 23px; font-weight: 400; color: var(--green); margin: 12px 0; }
+.check-status { background: var(--sky); padding: 14px; font-weight: 600; }
+.check-video-label { margin-top: 32px; font-weight: 600; }
+.check-video button:disabled { background: #e1e5de; color: #495348; border: 1px solid #a1ad9f; cursor: not-allowed; opacity: 1; transform: none; }
+.check-video .fine-print { margin-top: 20px; }
+@media (max-width: 600px) {
+  .check-intro { padding-top: 42px; }
+  .anxiety-check [data-question] { padding: 18px 14px; }
+  .check-options { grid-template-columns: 1fr; }
+  .check-examples { padding-left: 16px; }
+  .check-video button { width: 100%; white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.anxiety-check) { scroll-behavior: auto; }
+}

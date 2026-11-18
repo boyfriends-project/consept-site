@@ -19,7 +19,7 @@ for(const name of pages){const html=fs.readFileSync(path.join(root,name),'utf8')
   for(const match of html.matchAll(/<img\b[^>]+>/g))assert(/alt="[^"]*"/.test(match[0]));
   const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);assert.equal(new Set(ids).size,ids.length,'Duplicate ids');
 }
-const original=cp.execFileSync('git',['show','origin/main:index.html'],{cwd:root});
+const original=cp.execFileSync('git',['show','origin/main:archive/concept-design.html'],{cwd:root});
 const normalized=buffer=>buffer.toString('utf8').replace(/\r\n/g,'\n');
 assert(normalized(fs.readFileSync(path.join(root,'archive/concept-design.html')))===normalized(original),'Original service content must be preserved (Git checkout line endings normalized)');
 assert(normalized(fs.readFileSync(path.join(root,'CNAME')))===normalized(cp.execFileSync('git',['show','origin/main:CNAME'],{cwd:root})));

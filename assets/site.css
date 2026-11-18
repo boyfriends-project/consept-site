@@ -18,3 +18,5 @@
 .story details > h4.serif{font-size:clamp(20px,2.4vw,25px);font-weight:500;line-height:1.8;letter-spacing:.06em;color:var(--green);margin:60px 0 28px;padding:18px 22px;border-left:3px solid var(--sage);background:linear-gradient(90deg,#e8eee5, #e8eee540);border-radius:0 4px 4px 0;text-wrap:pretty}
 .story details > h3.serif + h4.serif{margin-top:0}
 @media(max-width:600px){.story details > h3.serif{margin:28px 0 32px}.story details > h4.serif{margin-top:44px;margin-bottom:24px;padding:16px 18px;letter-spacing:.03em}}
+
+.check-entry{padding-top:0}.check-entry-card{background:#e8eee8;border:1px solid var(--line);border-radius:8px;padding:clamp(24px,5vw,48px);text-align:center}.check-entry-card h2{font-size:clamp(23px,3vw,31px);line-height:1.8}.check-entry-note{margin:18px 0 0;font-size:13px}.check-entry-card .button{max-width:100%;white-space:normal}@media(max-width:600px){.check-entry-card .button{width:100%}}

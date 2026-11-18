@@ -10,7 +10,7 @@ if(phone){
   if(!candidates.length){console.error('家庭内LANのアドレスが見つかりません。PCの接続を確認してください。');process.exit(1);}
   host=candidates[0].address;
 }
-const pages=new Set(['/','/index.html','/coaching/','/coaching/index.html','/coaching/monitor/','/coaching/monitor/index.html','/privacy/','/privacy/index.html','/legal/','/legal/index.html']);
+const pages=new Set(['/anxiety-check/','/anxiety-check/index.html','/','/index.html','/coaching/','/coaching/index.html','/coaching/monitor/','/coaching/monitor/index.html','/privacy/','/privacy/index.html','/legal/','/legal/index.html']);
 const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{
   res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Cache-Control','no-store');res.setHeader('Referrer-Policy','no-referrer');
@@ -18,7 +18,7 @@ const server=http.createServer((req,res)=>{
   if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{'Allow':'GET, HEAD'});res.end('Preview only. Submission disabled.');return;}
   try{
     const url=new URL(req.url,'http://localhost');let name=decodeURIComponent(url.pathname);
-    if(['/coaching','/coaching/monitor','/privacy','/legal'].includes(name)){res.writeHead(308,{Location:name+'/'});res.end();return;}
+    if(['/anxiety-check','/coaching','/coaching/monitor','/privacy','/legal'].includes(name)){res.writeHead(308,{Location:name+'/'});res.end();return;}
     if(!pages.has(name)&&!/^\/assets\/[a-z0-9-]+\.(css|js|svg|webp)$/.test(name)){res.writeHead(404);res.end('Not found');return;}
     if(name.endsWith('/'))name+='index.html';const file=path.join(root,name);
     const stat=fs.statSync(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Content-Length':stat.size});
