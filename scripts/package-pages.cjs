@@ -8,7 +8,7 @@ const siteOrigin = 'https://consept.jp';
 const pages = ['index.html', 'coaching/index.html', 'coaching/monitor/index.html', 'privacy/index.html', 'legal/index.html', 'anxiety-check/index.html'];
 const unlisted = new Set(require('../content/unlisted-pages.json'));
 pages.push(...unlisted);
-const assets = ['favicon.svg', 'forest.webp', 'ruri.webp', 'site.css', 'site.js', 'sky.webp', 'anxiety-check.css', 'anxiety-check.js', 'mental-management.css'];
+const assets = ['favicon.svg', 'forest.webp', 'ruri.webp', 'site.css', 'site.js', 'sky.webp', 'anxiety-check.css', 'anxiety-check.js', 'mental-management-videos.css'];
 // After approval, copy the chosen 1200 x 630 PNG to assets/share.png.
 const hasShareImage = fs.existsSync(path.join(root, 'assets', 'share.png'));
 if (hasShareImage) {

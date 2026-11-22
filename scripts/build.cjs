@@ -45,7 +45,7 @@ page('anxiety-check', checkCopy.title + '｜consept', checkCopy.description, ren
   '<link rel="stylesheet" href="/assets/anxiety-check.css"><script src="/assets/anxiety-check.js" defer></script>');
 const lessonCopy = require('../content/mental-management.json');
 page('lessons/mental-management', lessonCopy.title + '｜consept', lessonCopy.introduction,
-  require('./mental-management.cjs')(lessonCopy), '<link rel="stylesheet" href="/assets/mental-management.css">');
+  require('./mental-management.cjs')(lessonCopy), '<link rel="stylesheet" href="/assets/mental-management-videos.css">');
 page('subscription-complete', 'メールアドレスの登録が完了しました｜consept',
   'ご登録ありがとうございます。無料動画レッスンの視聴URLをメールでお送りしました。受信トレイをご確認ください。',
   '<section class="section narrow"><div class="section-heading"><p class="eyebrow">Registration complete</p><h1 class="serif" style="font-size:clamp(26px,4vw,40px);line-height:1.8;overflow-wrap:anywhere">メールアドレスの登録が完了しました</h1><p>ご登録ありがとうございます。無料動画レッスンの視聴URLをメールでお送りしました。受信トレイをご確認ください。</p></div></section>');
