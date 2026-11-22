@@ -88,7 +88,7 @@ write('sitemap.xml', [
   ''
 ].join('\n'));
 write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${siteOrigin}/sitemap.xml\n`);
-write('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n");
+write('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n");
 const expected = [...pages, ...assets.map(n => 'assets/' + n), '404.html', 'robots.txt', 'sitemap.xml', '_headers'].sort();
 const actual = fs.readdirSync(out, {recursive:true, withFileTypes:true}).filter(e=>e.isFile()).map(e=>path.relative(out,path.join(e.parentPath,e.name)).replaceAll('\\','/')).sort();
 assert.deepEqual(actual, expected, 'Unexpected files in upload folder');

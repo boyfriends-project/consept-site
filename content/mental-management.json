@@ -2,12 +2,18 @@
   "title": "起業家のためのメンタルマネジメント術",
   "introduction": "ビジネスの不安に振り回されず、自分らしく行動するための無料レッスン。",
   "video": {
-    "provider": null,
-    "url": null
+    "provider": "youtube",
+    "url": "https://youtu.be/G8HaRnD5-D8",
+    "title": "無料講座　ひとり起業家のためのメンタルマネジメント術"
   },
   "topics": [
     "ビジネスで不安が生まれる仕組み",
     "不安に振り回されないための基本的な考え方",
     "日常で取り入れられるセルフコントロールの方法"
-  ]
+  ],
+  "meditation": {
+    "provider": "youtube",
+    "url": "https://youtu.be/J506hWpFTGk",
+    "title": "瞑想用動画"
+  }
 }
