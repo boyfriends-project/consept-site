@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 
-module.exports = function renderCheck(copy) {
+module.exports = function renderCheck(copy, { previewRegistration = false } = {}) {
   const escape = value => String(value).replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   })[char]);
@@ -22,14 +22,19 @@ module.exports = function renderCheck(copy) {
     <p class="check-catch"><strong>${escape(type.catch)}</strong></p>
     ${paragraphs(type.paragraphs)}</template>`).join('');
   const video = copy.video;
-  const invitation = video.visible ? `<section class="check-video" aria-labelledby="video-title">
-    <p class="check-status">${escape(video.status)}</p>
+  const showRegistration = video.visible || previewRegistration;
+  if (showRegistration) {
+    const url = new URL(video.formUrl);
+    assert(url.protocol === 'https:' && url.hostname.endsWith('.sibforms.com') && url.pathname.startsWith('/serve/') && !url.search && !url.hash && !url.username && !url.password, 'Invalid Brevo form URL');
+  }
+  const invitation = showRegistration ? `<section class="check-video" aria-labelledby="video-title">
+    ${previewRegistration ? '<p class="check-status">ローカル検証用：登録すると実際にBrevoからメールが送信されます。</p>' : ''}
     <h3>${escape(video.heading)}</h3><p>${escape(video.intro)}</p>
     <p>${escape(video.principle)}<strong>${escape(video.emphasis)}</strong></p>
     <p>${escape(video.offer)}</p><p class="check-video-label">${escape(video.label)}</p>
     <h4 id="video-title">${escape(video.title)}</h4><p>${escape(video.description)}</p>
     <p>${escape(video.delivery)}</p>
-    <button class="button" type="button" disabled>${escape(video.button)}（準備中）</button>
+    <a class="button" href="${escape(video.formUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${escape(video.button)}<span class="sr-only">（別タブで開きます）</span></a><p class="fine-print">Brevoの登録フォームが別タブで開きます。<a href="/privacy/">個人情報の取り扱い</a></p>
     <p class="fine-print">${escape(video.note)}</p></section>` : '';
   return `<div class="anxiety-check">
     <section class="check-intro narrow">

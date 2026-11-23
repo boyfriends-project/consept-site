@@ -33,6 +33,10 @@ function write(name, data) {
 }
 for (const name of pages) {
   const original = fs.readFileSync(path.join(root, name), 'utf8');
+  if (name === 'anxiety-check/index.html') {
+    assert.equal(original.includes('class="check-video"'), require('../content/anxiety-check.json').video.visible, 'Registration visibility differs from production setting');
+    assert(!original.includes('ローカル検証用：登録すると'), 'Local registration preview cannot be published');
+  }
   const banner = '<div class="preview"><span>LOCAL PREVIEW</span><span>ローカル確認用・リンク先は実際のGoogleフォームです</span></div>';
   const robots = '<meta name="robots" content="noindex,nofollow">';
   assert(original.includes(banner) && original.includes(robots), 'Unexpected preview format: ' + name);

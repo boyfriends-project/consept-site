@@ -121,7 +121,7 @@
     }
   ],
   "video": {
-    "visible": false,
+    "visible": true,
     "heading": "不安に振り回されないための技術を学びませんか？",
     "intro": "ビジネスを続けていくうえで、不安を感じる場面は誰にでもあります。",
     "principle": "大切なのは、不安を感じないことではなく、",
@@ -130,9 +130,10 @@
     "label": "無料動画レッスン",
     "title": "起業家のためのメンタルマネジメント術",
     "description": "不安に飲み込まれず、自分らしく行動するためのセルフコントロールの基本を学べます。",
-    "delivery": "メールアドレスをご登録いただいた方に、動画の視聴URLをお送りします。",
+    "delivery": "メールアドレスをご登録いただいた方に、無料動画レッスンの視聴URLとconseptのメールマガジン（メンタルマネジメントに関する情報、講座・サービスの案内）をお届けします。配信はメール内のリンクからいつでも停止できます。",
     "button": "無料動画レッスンを受け取る",
     "note": "※診断結果の閲覧にメール登録は必要ありません。",
-    "status": "準備中 — 現在、メール登録・動画のお受け取りはできません。"
+    "status": "準備中 — 現在、メール登録・動画のお受け取りはできません。",
+    "formUrl": "https://f1094e42.sibforms.com/serve/MUIFAAe5xIiwnzqfiDT_Bua_cZwY8zOlGneO6qZr9RF0lNUtNK4dFyNFp5IMYlqYVxJ9GgzHQGB7Zjoo4YtDy4eY4SKDiOKPncd1-h-yQEQa2J1X8Rf9iHRUF_9JWkdUSgSICvqSBCkH_-6o3L2eOCCCq8Y7aTYDz0IanQacUmhsTpFpWP4p6_WsaBlgzUcIgRFOVYi3Hcb-80IzSQ=="
   }
 }

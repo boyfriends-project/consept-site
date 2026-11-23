@@ -21,6 +21,13 @@ const server=http.createServer((req,res)=>{
     if(['/subscription-complete','/lessons/mental-management','/anxiety-check','/coaching','/coaching/monitor','/privacy','/legal'].includes(name)){res.writeHead(308,{Location:name+'/'});res.end();return;}
     if(name !== '/downloads/consept_anxiety_checklist.pdf'&&!pages.has(name)&&!/^\/assets\/[a-z0-9-]+\.(css|js|svg|webp)$/.test(name)){res.writeHead(404);res.end('Not found');return;}
     if(name.endsWith('/'))name+='index.html';const file=path.join(root,name);
+    if(process.env.BREVO_PREVIEW === '1' && name === '/anxiety-check/index.html') {
+      const copy = JSON.parse(fs.readFileSync(path.join(root,'content/anxiety-check.json'),'utf8'));
+      const body = require('./anxiety-check.cjs')(copy, {previewRegistration:true});
+      const html = fs.readFileSync(file,'utf8').replace(/<main id="main">[\s\S]*?<\/main>/, '<main id="main">'+body+'</main>');
+      res.writeHead(200, {'Content-Type':'text/html; charset=utf-8'});
+      res.end(req.method === 'HEAD' ? undefined : html); return;
+    }
     const stat=fs.statSync(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Content-Length':stat.size});
     if(req.method==='HEAD')res.end();else fs.createReadStream(file).pipe(res);
   }catch{res.writeHead(404);res.end('Not found');}

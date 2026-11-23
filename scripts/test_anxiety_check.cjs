@@ -46,7 +46,12 @@ const base = process.env.CHECK_URL || 'http://localhost:3010';
         assert((await page.locator('#check-description').innerText()).includes(paragraph));
       }
       assert.equal(await page.evaluate(() => document.activeElement.id), 'result-title');
-      assert.equal(await page.locator('.check-video').count(), 0);
+      if (process.env.CHECK_REGISTRATION_PREVIEW === '1') {
+        assert(await page.locator('.check-video').isVisible());
+        assert.equal(await page.locator('.check-video a.button').getAttribute('href'), copy.video.formUrl);
+      } else {
+        assert.equal(await page.locator('.check-video').count(), Number(copy.video.visible));
+      }
     }
     await page.locator('input[name="q1"][value="0"]').check();
     assert(await page.locator('#check-result').isHidden());
