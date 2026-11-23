@@ -4,6 +4,7 @@ const path = require('node:path');
 const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const out = process.env.COLUMN_STAGE || path.join(root, 'release', 'cloudflare-pages');
+const downloads = ['downloads/consept_anxiety_checklist.pdf'];
 const siteOrigin = 'https://consept.jp';
 const pages = ['index.html', 'coaching/index.html', 'coaching/monitor/index.html', 'privacy/index.html', 'legal/index.html', 'anxiety-check/index.html'];
 const unlisted = new Set(require('../content/unlisted-pages.json'));
@@ -78,6 +79,7 @@ for (const name of pages) {
   write(name, html);
 }
 for (const name of assets) write('assets/' + name, fs.readFileSync(path.join(root, 'assets', name)));
+for (const name of downloads) write(name, fs.readFileSync(path.join(root, name)));
 write('404.html', '<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>ページが見つかりません｜consept</title><link rel="stylesheet" href="/assets/site.css"></head><body><main class="narrow section"><h1>ページが見つかりません</h1><p>URLをご確認いただくか、トップページへお戻りください。</p><a class="button" href="/">トップページへ戻る</a></main></body></html>\n');
 const entries = pages.filter(name => !unlisted.has(name)).map(name => `  <url><loc>${escapeMarkup(canonicalUrl(name))}</loc></url>`);
 write('sitemap.xml', [
@@ -89,7 +91,7 @@ write('sitemap.xml', [
 ].join('\n'));
 write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${siteOrigin}/sitemap.xml\n`);
 write('_headers', "/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n");
-const expected = [...pages, ...assets.map(n => 'assets/' + n), '404.html', 'robots.txt', 'sitemap.xml', '_headers'].sort();
+const expected = [...downloads, ...pages, ...assets.map(n => 'assets/' + n), '404.html', 'robots.txt', 'sitemap.xml', '_headers'].sort();
 const actual = fs.readdirSync(out, {recursive:true, withFileTypes:true}).filter(e=>e.isFile()).map(e=>path.relative(out,path.join(e.parentPath,e.name)).replaceAll('\\','/')).sort();
 assert.deepEqual(actual, expected, 'Unexpected files in upload folder');
 for (const name of pages) {

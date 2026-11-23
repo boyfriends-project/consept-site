@@ -63,6 +63,7 @@ class Integration(unittest.TestCase):
         self.assertTrue(complete.is_file())
         self.assertIn('content="noindex,follow"', complete.read_text(encoding="utf-8"))
         self.assertNotIn("/subscription-complete/", (stage/"sitemap.xml").read_text())
+        self.assertEqual((stage/"downloads/consept_anxiety_checklist.pdf").read_bytes(), (ROOT/"downloads/consept_anxiety_checklist.pdf").read_bytes())
         return stage,images.entries
 
     def test_lifecycle(self):

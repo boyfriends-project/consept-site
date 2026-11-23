@@ -11,7 +11,7 @@ if(phone){
   host=candidates[0].address;
 }
 const pages=new Set(['/subscription-complete/','/subscription-complete/index.html','/lessons/mental-management/','/lessons/mental-management/index.html','/anxiety-check/','/anxiety-check/index.html','/','/index.html','/coaching/','/coaching/index.html','/coaching/monitor/','/coaching/monitor/index.html','/privacy/','/privacy/index.html','/legal/','/legal/index.html']);
-const types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp'};
+const types={'.pdf':'application/pdf','.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{
   res.setHeader('X-Robots-Tag','noindex, nofollow');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Cache-Control','no-store');res.setHeader('Referrer-Policy','no-referrer');
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; frame-src https://www.youtube-nocookie.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'");
@@ -19,7 +19,7 @@ const server=http.createServer((req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');let name=decodeURIComponent(url.pathname);
     if(['/subscription-complete','/lessons/mental-management','/anxiety-check','/coaching','/coaching/monitor','/privacy','/legal'].includes(name)){res.writeHead(308,{Location:name+'/'});res.end();return;}
-    if(!pages.has(name)&&!/^\/assets\/[a-z0-9-]+\.(css|js|svg|webp)$/.test(name)){res.writeHead(404);res.end('Not found');return;}
+    if(name !== '/downloads/consept_anxiety_checklist.pdf'&&!pages.has(name)&&!/^\/assets\/[a-z0-9-]+\.(css|js|svg|webp)$/.test(name)){res.writeHead(404);res.end('Not found');return;}
     if(name.endsWith('/'))name+='index.html';const file=path.join(root,name);
     const stat=fs.statSync(file);res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream','Content-Length':stat.size});
     if(req.method==='HEAD')res.end();else fs.createReadStream(file).pipe(res);
