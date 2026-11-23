@@ -34,7 +34,7 @@ module.exports = function renderCheck(copy, { previewRegistration = false } = {}
     <p>${escape(video.offer)}</p><p class="check-video-label">${escape(video.label)}</p>
     <h4 id="video-title">${escape(video.title)}</h4><p>${escape(video.description)}</p>
     <p>${escape(video.delivery)}</p>
-    <a class="button" href="${escape(video.formUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${escape(video.button)}<span class="sr-only">（別タブで開きます）</span></a><p class="fine-print">Brevoの登録フォームが別タブで開きます。<a href="/privacy/">個人情報の取り扱い</a></p>
+    <a class="button" href="${escape(video.formUrl)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${escape(video.button)}<span class="sr-only">（別タブで開きます）</span></a><p class="fine-print">Brevoの登録フォームが別タブで開きます。<a href="/privacy/" target="_blank" rel="noopener noreferrer">個人情報の取り扱い（別タブ）</a></p>
     <p class="fine-print">${escape(video.note)}</p></section>` : '';
   return `<div class="anxiety-check">
     <section class="check-intro narrow">
